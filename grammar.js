@@ -47,10 +47,11 @@ module.exports = grammar({
   ],
 
   externals: $ => [
-    $.separator,
+    $._newline,
     $._backslash,
     $.float,
     $.block_comment,
+    '{',
   ],
 
   extras: $ => [
@@ -70,11 +71,11 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   rules: {
-    source_file: $ => seq(repeat(seq($.declaration, $.separator)), optional($.declaration)),
+    source_file: $ => seq(repeat(seq($.declaration, $._separator)), optional($.declaration)),
 
     block: $ => prec(2, seq(
       '{',
-      sep(seq(optional($.tag), $.statement), $.separator),
+      sep(seq(optional($.tag), $.statement), $._separator),
       '}',
     )),
 
@@ -435,7 +436,7 @@ module.exports = grammar({
         optional('in'),
         field('condition', choice(
           $.expression,
-          seq($.assignment_statement, $.separator, optional($.expression)),
+          seq($.assignment_statement, $._separator, optional($.expression)),
         )),
       )),
       '{',
@@ -447,7 +448,7 @@ module.exports = grammar({
       'case',
       commaSep(field('condition', choice($.expression, $.array_type, $.pointer_type))),
       ':',
-      sep(seq(optional($.tag), $.statement), $.separator),
+      sep(seq(optional($.tag), $.statement), $._separator),
     ),
 
     defer_statement: $ => seq('defer', $.statement),
@@ -668,7 +669,7 @@ module.exports = grammar({
 
     variadic_type: $ => prec.left(seq('..', $.type)),
 
-    array_type: $ => prec.right(1, seq(
+    array_type: $ => prec(1, seq(
       optional($.tag),
       '[',
       optional(seq(optional('$'), choice('dynamic', '^', '?', $.expression))),
@@ -845,16 +846,6 @@ module.exports = grammar({
       ));
     },
 
-    // float: _ => {
-    //   const decimal = /[0-9]+i?/;
-    //   const float = /[0-9]*\.([0-9]+i?|[^.])/;
-    //
-    //   return token(choice(
-    //     seq(optional('-'), decimal, /[eE][+-]?[0-9]+/),
-    //     seq(optional('-'), float, optional(/[eE][+-]?[0-9]+/)),
-    //   ));
-    // },
-
     string: $ => choice($._string_literal, $._raw_string_literal),
 
     _string_literal: $ => seq(
@@ -919,6 +910,11 @@ module.exports = grammar({
       'false',
       'true',
     )),
+
+    _separator: $ => choice(
+      $._newline,
+      ';',
+    ),
 
     comment: _ => token(seq('//', /[^\r\n]*/)),
   },

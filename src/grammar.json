@@ -16,7 +16,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "separator"
+                "name": "_separator"
               }
             ]
           }
@@ -79,7 +79,7 @@
                       "members": [
                         {
                           "type": "SYMBOL",
-                          "name": "separator"
+                          "name": "_separator"
                         },
                         {
                           "type": "CHOICE",
@@ -3105,7 +3105,7 @@
                           },
                           {
                             "type": "SYMBOL",
-                            "name": "separator"
+                            "name": "_separator"
                           },
                           {
                             "type": "CHOICE",
@@ -3260,7 +3260,7 @@
                     "members": [
                       {
                         "type": "SYMBOL",
-                        "name": "separator"
+                        "name": "_separator"
                       },
                       {
                         "type": "CHOICE",
@@ -5339,7 +5339,7 @@
       }
     },
     "array_type": {
-      "type": "PREC_RIGHT",
+      "type": "PREC",
       "value": 1,
       "content": {
         "type": "SEQ",
@@ -7293,6 +7293,19 @@
         ]
       }
     },
+    "_separator": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_newline"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
+    },
     "comment": {
       "type": "TOKEN",
       "content": {
@@ -7341,7 +7354,7 @@
   "externals": [
     {
       "type": "SYMBOL",
-      "name": "separator"
+      "name": "_newline"
     },
     {
       "type": "SYMBOL",
@@ -7354,6 +7367,10 @@
     {
       "type": "SYMBOL",
       "name": "block_comment"
+    },
+    {
+      "type": "STRING",
+      "value": "{"
     }
   ],
   "inline": [],

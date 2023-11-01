@@ -729,10 +729,6 @@
       "required": false,
       "types": [
         {
-          "type": "separator",
-          "named": true
-        },
-        {
           "type": "statement",
           "named": true
         },
@@ -2054,10 +2050,6 @@
         {
           "type": "declaration",
           "named": true
-        },
-        {
-          "type": "separator",
-          "named": true
         }
       ]
     }
@@ -2240,10 +2232,6 @@
       "required": false,
       "types": [
         {
-          "type": "separator",
-          "named": true
-        },
-        {
           "type": "statement",
           "named": true
         },
@@ -2263,15 +2251,15 @@
         "required": false,
         "types": [
           {
+            "type": ";",
+            "named": false
+          },
+          {
             "type": "assignment_statement",
             "named": true
           },
           {
             "type": "expression",
-            "named": true
-          },
-          {
-            "type": "separator",
             "named": true
           }
         ]
@@ -3154,10 +3142,6 @@
   {
     "type": "return",
     "named": false
-  },
-  {
-    "type": "separator",
-    "named": true
   },
   {
     "type": "string_content",
