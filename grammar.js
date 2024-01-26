@@ -717,18 +717,24 @@ module.exports = grammar({
       repeat(seq($.tag, optional($.number))), // #align 16
       repeat1(seq(
         '{',
-        optional(seq(
-          commaSep1(seq(
-            commaSep1(seq(optional('using'), $.identifier)),
-            ':',
-            $.type,
-            optional($.string),
-          )),
-          optional(','),
-        )),
+        optional($._struct_members),
         '}',
       )),
     )),
+
+    _struct_members: $ => seq(
+      commaSep1($.struct_member),
+      optional(','),
+    ),
+
+    struct_member: $ => seq(
+      commaSep1(seq(optional('using'), $.identifier)),
+      ':',
+      optional($.tag),
+      $.type,
+      optional($.string),
+
+    ),
 
     enum_type: $ => seq(
       'enum',
