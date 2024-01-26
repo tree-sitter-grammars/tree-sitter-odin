@@ -521,7 +521,6 @@ module.exports = grammar({
 
     unary_expression: $ => prec.right(PREC.UNARY, seq(
       field('operator', choice('+', '-', '~', '!', '&')),
-      optional($.tag),
       field('argument', $.expression),
     )),
 
