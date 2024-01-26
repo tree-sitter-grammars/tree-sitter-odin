@@ -76,6 +76,14 @@
         "named": true
       },
       {
+        "type": "or_break_expression",
+        "named": true
+      },
+      {
+        "type": "or_continue_expression",
+        "named": true
+      },
+      {
         "type": "or_return_expression",
         "named": true
       },
@@ -195,6 +203,14 @@
       },
       {
         "type": "member_expression",
+        "named": true
+      },
+      {
+        "type": "or_break_expression",
+        "named": true
+      },
+      {
+        "type": "or_continue_expression",
         "named": true
       },
       {
@@ -391,6 +407,14 @@
       },
       {
         "type": "member_expression",
+        "named": true
+      },
+      {
+        "type": "or_break_expression",
+        "named": true
+      },
+      {
+        "type": "or_continue_expression",
         "named": true
       },
       {
@@ -843,6 +867,14 @@
           },
           {
             "type": "member_expression",
+            "named": true
+          },
+          {
+            "type": "or_break_expression",
+            "named": true
+          },
+          {
+            "type": "or_continue_expression",
             "named": true
           },
           {
@@ -1660,6 +1692,47 @@
     "fields": {}
   },
   {
+    "type": "or_break_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "or_continue_expression",
+    "named": true,
+    "fields": {
+      "label": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "or_return_expression",
     "named": true,
     "fields": {},
@@ -2170,23 +2243,15 @@
     }
   },
   {
-    "type": "struct_type",
+    "type": "struct_member",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "polymorphic_parameters",
           "named": true
         },
         {
@@ -2199,6 +2264,33 @@
         },
         {
           "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "struct_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "polymorphic_parameters",
+          "named": true
+        },
+        {
+          "type": "struct_member",
+          "named": true
+        },
+        {
+          "type": "tag",
           "named": true
         }
       ]
@@ -2363,6 +2455,14 @@
           },
           {
             "type": "member_expression",
+            "named": true
+          },
+          {
+            "type": "or_break_expression",
+            "named": true
+          },
+          {
+            "type": "or_continue_expression",
             "named": true
           },
           {
@@ -2561,16 +2661,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "tag",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -2682,6 +2772,10 @@
         },
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "procedure",
           "named": true
         }
       ]
@@ -3122,6 +3216,14 @@
   {
     "type": "number",
     "named": true
+  },
+  {
+    "type": "or_break",
+    "named": false
+  },
+  {
+    "type": "or_continue",
+    "named": false
   },
   {
     "type": "or_else",
