@@ -281,7 +281,7 @@ module.exports = grammar({
           $._procedure_type,
         ),
       )),
-      optional(seq(':', $.type, optional($.identifier), optional(seq('=', $.expression)))),
+      optional(seq(':', optional($.tag), $.type, optional($.identifier), optional(seq('=', $.expression)))),
     )),
     default_parameter: $ => seq(
       optional('using'),
