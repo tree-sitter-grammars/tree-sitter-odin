@@ -508,6 +508,8 @@ module.exports = grammar({
       $.in_expression,
       $.variadic_expression,
       $.or_return_expression,
+      $.or_continue_expression,
+      $.or_break_expression,
       $.identifier,
       $.address,
       $.map_type,
@@ -640,6 +642,14 @@ module.exports = grammar({
     parenthesized_expression: $ => seq('(', $.expression, ')'),
 
     or_return_expression: $ => seq($.expression, 'or_return'),
+
+    or_continue_expression: $ => prec.right(seq(
+      $.expression,
+      'or_continue',
+      field('label', optional($.identifier)),
+    )),
+
+    or_break_expression: $ => prec.right(seq($.expression, 'or_break', optional($.expression))),
 
     address: $ => seq($.expression, '^'),
 
