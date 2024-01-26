@@ -915,7 +915,7 @@ module.exports = grammar({
 
     uninitialized: _ => '---',
 
-    tag: _ => token(seq(/#[a-zA-Z_][a-zA-Z0-9_]*/, optional(seq('(', /[a-zA-Z][a-zA-Z0-9]*/, ')')))),
+    tag: _ => token(seq(/#[a-zA-Z_][a-zA-Z0-9_]*/, optional(seq('(', /\w*/, ')')))),
 
     identifier: _ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,
 
