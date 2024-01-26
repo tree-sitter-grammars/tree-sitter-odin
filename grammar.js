@@ -49,6 +49,7 @@ module.exports = grammar({
   externals: $ => [
     $._newline,
     $._backslash,
+    $._nl_comma,
     $.float,
     $.block_comment,
     '{',
@@ -474,7 +475,7 @@ module.exports = grammar({
       'return',
       optional($.tag),
       optional(seq(
-        commaSep1(choice($.expression, $._procedure_type)),
+        commaExternalSep1(choice($.expression, $._procedure_type), $),
         optional(','),
       )),
     )),
@@ -944,6 +945,20 @@ function commaSep(rule) {
  */
 function commaSep1(rule) {
   return sep1(rule, ',');
+}
+
+/**
+ * Creates a rule to match one or more of the rules separated by a comma
+ *
+ * @param {Rule} rule
+ *
+ * @param {GrammarSymbols<any>} $
+ *
+ * @return {SeqRule}
+ *
+ */
+function commaExternalSep1(rule, $) {
+  return sep1(rule, choice(',', alias($._nl_comma, ',')));
 }
 
 /**

@@ -1,6 +1,5 @@
 #include "tree_sitter/parser.h"
 
-#include <assert.h>
 #include <ctype.h>
 #include <string.h>
 #include <wctype.h>
@@ -8,6 +7,7 @@
 enum {
     NEWLINE,
     BACKSLASH,
+    NL_COMMA,
     FLOAT,
     BLOCK_COMMENT,
     BRACKET,
@@ -127,6 +127,28 @@ bool tree_sitter_odin_external_scanner_scan(void *payload, TSLexer *lexer, const
                         }
                         goto newline;
                     }
+            }
+        }
+    }
+
+    if (valid_symbols[NL_COMMA]) {
+        while (iswspace(lexer->lookahead) && lexer->lookahead != '\n') {
+            skip(lexer);
+        }
+
+        if (lexer->lookahead == ',') {
+            advance(lexer);
+            lexer->result_symbol = NL_COMMA;
+            lexer->mark_end(lexer);
+            while (iswspace(lexer->lookahead) && lexer->lookahead != '\n') {
+                advance(lexer);
+            }
+
+            if (lexer->lookahead == '\n') {
+                while (iswspace(lexer->lookahead)) {
+                    advance(lexer);
+                }
+                return lexer->lookahead != '}';
             }
         }
     }
