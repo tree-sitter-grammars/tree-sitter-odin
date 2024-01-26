@@ -209,7 +209,7 @@ module.exports = grammar({
       optional($.attributes),
       commaSep1($.expression),
       ':=',
-      commaSep1($.expression),
+      commaSep1(choice($.expression, $.procedure)),
       optional(','),
     ),
 
