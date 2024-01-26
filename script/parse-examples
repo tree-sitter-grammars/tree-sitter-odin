@@ -25,7 +25,7 @@ function clone_repo {
 	popd >/dev/null
 }
 
-clone_repo odin-lang Odin 88f6b5f16be37887667f52d1849c62209266d9b0
+clone_repo odin-lang Odin da6edb3764b735a839acdd375328574833d782c1
 
 known_failures="$(cat script/known_failures.txt)"
 
