@@ -2,33 +2,56 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
+    paths:
+      - grammar.js
+      - src/**
+      - test/**
+      - bindings/**
+      - binding.gyp
   pull_request:
-    branches:
-      - "**"
+    paths:
+      - grammar.js
+      - src/**
+      - test/**
+      - bindings/**
+      - binding.gyp
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    name: Test parser
+    runs-on: ${{matrix.os}}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [ubuntu-latest, windows-latest, macos-14]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@v1
+      - name: Set up examples
+        run: |-
+          git clone https://github.com/odin-lang/Odin examples/Odin --single-branch --depth=1 --filter=blob:none
+      - name: Run tests
+        uses: tree-sitter/parser-test-action@v2
         with:
-          node-version: 16
-      - run: npm install
-      - run: npm test
-
-  test_windows:
-    runs-on: windows-2019
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+          test-rust: ${{runner.os == 'Linux'}}
+      - name: Parse examples
+        id: examples
+        continue-on-error: true
+        uses: tree-sitter/parse-action@v4
         with:
-          node-version: 16
-      - run: npm install
-      - run: npm run-script test-windows
+          files: examples/**/*.odin
+          invalid-files: |
+            examples/Odin/core/math/linalg/specific.odin
+            examples/Odin/core/runtime/internal.odin
+      - uses: actions/upload-artifact@v4
+        if: steps.examples.outputs.failures != ''
+        with:
+          name: failures-${{matrix.os}}
+          path: ${{steps.examples.outputs.failures}}
