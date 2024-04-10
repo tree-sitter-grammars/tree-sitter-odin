@@ -3,7 +3,6 @@ import PackageDescription
 
 let package = Package(
     name: "TreeSitterOdin",
-    platforms: [.macOS(.v10_13), .iOS(.v11)],
     products: [
         .library(name: "TreeSitterOdin", targets: ["TreeSitterOdin"]),
     ],
@@ -12,17 +11,27 @@ let package = Package(
         .target(name: "TreeSitterOdin",
                 path: ".",
                 exclude: [
-                    "binding.gyp",
-                    "bindings",
                     "Cargo.toml",
-                    "test",
+                    "Makefile",
+                    "binding.gyp",
+                    "bindings/c",
+                    "bindings/go",
+                    "bindings/node",
+                    "bindings/python",
+                    "bindings/rust",
+                    "prebuilds",
                     "grammar.js",
-                    "LICENSE",
                     "package.json",
-                    "README.md",
-                    "script",
-                    "src/grammar.json",
-                    "src/node-types.json",
+                    "package-lock.json",
+                    "pyproject.toml",
+                    "setup.py",
+                    "test",
+                    "examples",
+                    ".editorconfig",
+                    ".github",
+                    ".gitignore",
+                    ".gitattributes",
+                    ".gitmodules",
                 ],
                 sources: [
                     "src/parser.c",
@@ -33,5 +42,6 @@ let package = Package(
                 ],
                 publicHeadersPath: "bindings/swift",
                 cSettings: [.headerSearchPath("src")])
-    ]
+    ],
+    cLanguageStandard: .c11
 )

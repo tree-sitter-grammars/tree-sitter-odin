@@ -6,9 +6,6 @@
  * @see {@link https://odin-lang.org/docs/overview|Official documentation}
  */
 
-/* eslint-disable arrow-parens */
-/* eslint-disable camelcase */
-/* eslint-disable-next-line spaced-comment */
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
