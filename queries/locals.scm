@@ -24,6 +24,8 @@
 
 (union_declaration (identifier) @definition.type "::")
 
+(bit_field_declaration (identifier) @definition.type "::")
+
 (variable_declaration (identifier) @definition.var ":=")
 
 (const_declaration (identifier) @definition.constant "::")

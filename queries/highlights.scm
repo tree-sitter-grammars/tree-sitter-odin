@@ -27,6 +27,7 @@
   "map"
   "bit_set"
   "matrix"
+  "bit_field"
 ] @keyword
 
 [
@@ -133,6 +134,8 @@
 (enum_declaration (identifier) @type "::")
 
 (union_declaration (identifier) @type "::")
+
+(bit_field_declaration (identifier) @type "::")
 
 (const_declaration (identifier) @type "::" [(array_type) (distinct_type) (bit_set_type) (pointer_type)])
 

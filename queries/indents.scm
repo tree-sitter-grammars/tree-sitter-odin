@@ -4,6 +4,7 @@
   (overloaded_procedure_declaration)
   (enum_declaration)
   (union_declaration)
+  (bit_field_declaration)
   (when_statement)
   (for_statement)
   (switch_case)

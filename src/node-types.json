@@ -16,6 +16,10 @@
         "named": true
       },
       {
+        "type": "bit_field_declaration",
+        "named": true
+      },
+      {
         "type": "call_expression",
         "named": true
       },
@@ -319,6 +323,10 @@
       },
       {
         "type": "binary_expression",
+        "named": true
+      },
+      {
+        "type": "bit_field_declaration",
         "named": true
       },
       {
@@ -704,6 +712,48 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "bit_field_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attributes",
+          "named": true
+        },
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "bit_field_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -2547,6 +2597,10 @@
           "named": true
         },
         {
+          "type": "bit_field_type",
+          "named": true
+        },
+        {
           "type": "bit_set_type",
           "named": true
         },
@@ -3103,6 +3157,10 @@
   },
   {
     "type": "auto_cast",
+    "named": false
+  },
+  {
+    "type": "bit_field",
     "named": false
   },
   {
