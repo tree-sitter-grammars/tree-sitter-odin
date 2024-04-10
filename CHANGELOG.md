@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/tree-sitter-grammars/tree-sitter-odin/compare/v1.1.0...v1.2.0) (2024-04-10)
+
+
+### Features
+
+* improve indents ([89a372b](https://github.com/tree-sitter-grammars/tree-sitter-odin/commit/89a372b9f1dfa3d510aad20601e71ef4ba446732))
+* support the `bit_field` type ([9f2355b](https://github.com/tree-sitter-grammars/tree-sitter-odin/commit/9f2355ba25cc5e2c88ba35eb0d366396935c63a6))
+
 ## [1.1.0](https://github.com/amaanq/tree-sitter-odin/compare/v1.0.1...v1.1.0) (2024-01-26)
 
 
