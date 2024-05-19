@@ -1208,7 +1208,7 @@
         "required": true,
         "types": [
           {
-            "type": "block",
+            "type": "statement",
             "named": true
           }
         ]
@@ -1234,7 +1234,7 @@
         "required": true,
         "types": [
           {
-            "type": "block",
+            "type": "statement",
             "named": true
           }
         ]
@@ -1480,13 +1480,9 @@
         ]
       },
       "consequence": {
-        "multiple": true,
+        "multiple": false,
         "required": true,
         "types": [
-          {
-            "type": "do",
-            "named": false
-          },
           {
             "type": "statement",
             "named": true

@@ -2738,30 +2738,34 @@
             }
           },
           {
-            "type": "FIELD",
-            "name": "consequence",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "FIELD",
+                "name": "consequence",
+                "content": {
                   "type": "SYMBOL",
                   "name": "block"
-                },
-                {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": "do"
-                    },
-                    {
+                }
+              },
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "do"
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "consequence",
+                    "content": {
                       "type": "SYMBOL",
                       "name": "statement"
                     }
-                  ]
-                }
-              ]
-            }
+                  }
+                ]
+              }
+            ]
           },
           {
             "type": "REPEAT",
@@ -2838,17 +2842,34 @@
           }
         },
         {
-          "type": "FIELD",
-          "name": "consequence",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "consequence",
+              "content": {
                 "type": "SYMBOL",
                 "name": "block"
               }
-            ]
-          }
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "do"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "consequence",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "statement"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -2860,12 +2881,34 @@
           "value": "else"
         },
         {
-          "type": "FIELD",
-          "name": "consequence",
-          "content": {
-            "type": "SYMBOL",
-            "name": "block"
-          }
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "consequence",
+              "content": {
+                "type": "SYMBOL",
+                "name": "block"
+              }
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "do"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "consequence",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "statement"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     },

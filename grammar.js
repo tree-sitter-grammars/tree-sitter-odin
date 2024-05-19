@@ -371,7 +371,10 @@ module.exports = grammar({
       )),
       optional($.tag),
       field('condition', $.expression),
-      field('consequence', choice($.block, seq('do', $.statement))),
+      choice(
+        field('consequence', $.block),
+        seq('do', field('consequence', $.statement)),
+      ),
       repeat($.else_if_clause),
       optional($.else_clause),
     )),
@@ -384,12 +387,18 @@ module.exports = grammar({
         ';',
       )),
       field('condition', $.expression),
-      field('consequence', choice($.block)),
+      choice(
+        field('consequence', $.block),
+        seq('do', field('consequence', $.statement)),
+      ),
     ),
 
     else_clause: $ => seq(
       'else',
-      field('consequence', $.block),
+      choice(
+        field('consequence', $.block),
+        seq('do', field('consequence', $.statement)),
+      ),
     ),
 
     when_statement: $ => prec.right(seq(
