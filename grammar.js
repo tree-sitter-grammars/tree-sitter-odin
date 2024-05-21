@@ -50,6 +50,7 @@ module.exports = grammar({
     $.float,
     $.block_comment,
     '{',
+    '"',
   ],
 
   extras: $ => [
