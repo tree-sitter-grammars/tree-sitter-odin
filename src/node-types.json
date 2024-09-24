@@ -2161,6 +2161,7 @@
   {
     "type": "source_file",
     "named": true,
+    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -2870,10 +2871,6 @@
       "required": true,
       "types": [
         {
-          "type": "block",
-          "named": true
-        },
-        {
           "type": "else_clause",
           "named": true
         },
@@ -2883,6 +2880,10 @@
         },
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "statement",
           "named": true
         }
       ]

@@ -405,7 +405,7 @@ module.exports = grammar({
     when_statement: $ => prec.right(seq(
       'when',
       $.expression,
-      $.block,
+      choice($.block, seq('do', $.statement)),
       repeat($.else_when_clause),
       optional($.else_clause),
     )),
