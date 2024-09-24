@@ -2927,8 +2927,26 @@
             "name": "expression"
           },
           {
-            "type": "SYMBOL",
-            "name": "block"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "block"
+              },
+              {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "do"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "statement"
+                  }
+                ]
+              }
+            ]
           },
           {
             "type": "REPEAT",
