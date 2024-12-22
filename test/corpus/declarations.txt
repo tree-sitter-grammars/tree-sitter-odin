@@ -69,3 +69,14 @@ Handle :: bit_field u32 {
     (type
       (identifier))
     (number)))
+
+====================
+Build Tags
+====================
+
+#+build darwin, linux
+
+---
+
+(source_file
+  (build_tag))
