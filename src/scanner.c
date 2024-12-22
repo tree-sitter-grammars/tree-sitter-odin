@@ -1,6 +1,7 @@
 #include "tree_sitter/parser.h"
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 #include <wctype.h>
 
@@ -231,7 +232,7 @@ backslash:
         skip(lexer);
     }
 
-    if (valid_symbols[BLOCK_COMMENT] && !valid_symbols[QUOTE] && lexer->lookahead == '/') {
+    if (valid_symbols[BLOCK_COMMENT] && lexer->lookahead == '/') {
         advance(lexer);
         if (lexer->lookahead != '*') {
             return false;
