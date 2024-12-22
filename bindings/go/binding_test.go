@@ -3,8 +3,8 @@ package tree_sitter_odin_test
 import (
 	"testing"
 
-	tree_sitter "github.com/smacker/go-tree-sitter"
-	"github.com/tree-sitter/tree-sitter-odin"
+	tree_sitter "github.com/tree-sitter/go-tree-sitter"
+	tree_sitter_odin "tree-sitter-grammars/tree-sitter-odin/bindings/go"
 )
 
 func TestCanLoadGrammar(t *testing.T) {
