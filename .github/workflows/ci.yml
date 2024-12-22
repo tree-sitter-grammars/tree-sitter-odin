@@ -34,22 +34,49 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up tree-sitter
         uses: tree-sitter/setup-action/cli@v1
-      - name: Set up examples
-        run: |-
-          git clone https://github.com/odin-lang/Odin examples/Odin --single-branch --depth=1 --filter=blob:none
       - name: Run tests
         uses: tree-sitter/parser-test-action@v2
         with:
-          test-rust: ${{runner.os == 'Linux'}}
+          test-rust: true
+          test-node: true
+          test-python: true
+          test-go: true
+          test-swift: true
+      - name: Set up examples
+        run: |-
+          git clone https://github.com/odin-lang/Odin examples/Odin --single-branch --depth=1 --filter=blob:none
       - name: Parse examples
         id: examples
-        continue-on-error: true
         uses: tree-sitter/parse-action@v4
         with:
-          files: examples/**/*.odin
-          invalid-files: |
-            examples/Odin/core/math/linalg/specific.odin
-            examples/Odin/core/runtime/internal.odin
+          # FIXME: The last 7 files only fail on Windows
+          files: |
+            examples/**/*.odin
+            !examples/Odin/base/intrinsics/intrinsics.odin
+            !examples/Odin/base/runtime/internal.odin
+            !examples/Odin/core/crypto/_fiat/field_curve25519/field.odin
+            !examples/Odin/core/debug/trace/trace_cpp.odin
+            !examples/Odin/core/encoding/cbor/marshal.odin
+            !examples/Odin/core/math/linalg/specific.odin
+            !examples/Odin/core/mem/allocators.odin
+            !examples/Odin/core/os/os2/process_windows.odin
+            !examples/Odin/core/sync/chan/chan.odin
+            !examples/Odin/core/sys/linux/bits.odin
+            !examples/Odin/core/sys/posix/fcntl.odin
+            !examples/Odin/core/testing/runner.odin
+            !examples/Odin/core/text/regex/common/common.odin
+            !examples/Odin/tests/core/encoding/json/test_core_json.odin
+            !examples/Odin/vendor/raylib/raygui.odin
+            !examples/Odin/vendor/raylib/raylib.odin
+            !examples/Odin/vendor/raylib/rlgl/rlgl.odin
+
+            !examples/Odin/base/runtime/wasm_allocator.odin
+            !examples/Odin/core/hash/xxhash/xxhash_3.odin
+            !examples/Odin/core/image/netpbm/netpbm.odin
+            !examples/Odin/core/sys/posix/netinet_in.odin
+            !examples/Odin/core/sys/windows/kernel32.odin
+            !examples/Odin/core/sys/windows/types.odin
+            !examples/Odin/tests/vendor/glfw/test_vendor_glfw.odin
       - uses: actions/upload-artifact@v4
         if: steps.examples.outputs.failures != ''
         with:
