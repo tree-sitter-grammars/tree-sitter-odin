@@ -950,7 +950,7 @@ module.exports = grammar({
 
     tag: _ => token(seq(/#[a-zA-Z_][a-zA-Z0-9_]*/, optional(seq('(', /\w*/, ')')))),
 
-    identifier: _ => /[_\p{XID_Start}][_\p{XID_Continue}]*/,
+    identifier: _ => /[_\p{XID_Start}][_\p{XID_Continue}]*/u,
 
     field_identifier: $ => prec(-1, seq($.identifier, repeat1(seq('.', $.identifier)))),
 
@@ -976,8 +976,7 @@ module.exports.PREC = PREC;
  *
  * @param {Rule} rule
  *
- * @return {ChoiceRule}
- *
+ * @returns {ChoiceRule}
  */
 function commaSep(rule) {
   return optional(commaSep1(rule));
@@ -988,8 +987,7 @@ function commaSep(rule) {
  *
  * @param {Rule} rule
  *
- * @return {SeqRule}
- *
+ * @returns {SeqRule}
  */
 function commaSep1(rule) {
   return sep1(rule, ',');
@@ -1002,8 +1000,7 @@ function commaSep1(rule) {
  *
  * @param {GrammarSymbols<any>} $
  *
- * @return {SeqRule}
- *
+ * @returns {SeqRule}
  */
 function commaExternalSep1(rule, $) {
   return sep1(rule, choice(',', alias($._nl_comma, ',')));
@@ -1012,12 +1009,11 @@ function commaExternalSep1(rule, $) {
 /**
  * Creates a rule to match zero or more occurrences of `rule` separated by `sep`
  *
- * @param {RegExp|Rule|String} rule
+ * @param {RegExp | Rule | string} rule
  *
- * @param {RegExp|Rule|String} sep
+ * @param {RegExp | Rule | string} sep
  *
- * @return {ChoiceRule}
- *
+ * @returns {ChoiceRule}
  */
 function sep(rule, sep) {
   return optional(seq(rule, repeat(seq(sep, optional(rule)))));
@@ -1026,12 +1022,11 @@ function sep(rule, sep) {
 /**
  * Creates a rule to match one or more occurrences of `rule` separated by `sep`
  *
- * @param {RegExp|Rule|String} rule
+ * @param {RegExp | Rule | string} rule
  *
- * @param {RegExp|Rule|String} sep
+ * @param {RegExp | Rule | string} sep
  *
- * @return {SeqRule}
- *
+ * @returns {SeqRule}
  */
 function sep1(rule, sep) {
   return seq(rule, repeat(seq(sep, rule)));
