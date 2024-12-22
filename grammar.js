@@ -774,6 +774,7 @@ module.exports = grammar({
 
     enum_type: $ => seq(
       'enum',
+      optional(field('underlying_type', $.type)),
       '{',
       commaSep1(seq($.identifier, optional(seq('=', $.expression)))),
       optional(','),
@@ -853,6 +854,10 @@ module.exports = grammar({
       'bit_set',
       '[',
       $.expression,
+      optional(seq(
+        ';',
+        field('underlying_type', $.type),
+      )),
       ']',
       '{',
       commaSep($.expression),
