@@ -855,7 +855,7 @@ module.exports = grammar({
       $.type,
       '{',
       optional(seq(
-        commaSep1(seq($.expression, '=', $.literal)),
+        commaSep1(seq($.expression, '=', $.expression)),
         optional(','),
       )),
       '}',
