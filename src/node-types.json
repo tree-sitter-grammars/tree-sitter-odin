@@ -20,6 +20,10 @@
         "named": true
       },
       {
+        "type": "build_tag",
+        "named": true
+      },
+      {
         "type": "call_expression",
         "named": true
       },
@@ -569,11 +573,7 @@
       "required": true,
       "types": [
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "literal",
+          "type": "expression",
           "named": true
         }
       ]
@@ -759,7 +759,18 @@
   {
     "type": "bit_set",
     "named": true,
-    "fields": {},
+    "fields": {
+      "underlying_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -832,6 +843,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "build_tag",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "call_expression",
@@ -1301,7 +1317,18 @@
   {
     "type": "enum_type",
     "named": true,
-    "fields": {},
+    "fields": {
+      "underlying_type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -1551,6 +1578,10 @@
           "named": true
         },
         {
+          "type": "identifier",
+          "named": true
+        },
+        {
           "type": "string",
           "named": true
         }
@@ -1731,11 +1762,6 @@
         }
       ]
     }
-  },
-  {
-    "type": "nil",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "or_break_expression",
@@ -2957,6 +2983,10 @@
     "named": false
   },
   {
+    "type": "#+",
+    "named": false
+  },
+  {
     "type": "$",
     "named": false
   },
@@ -3262,7 +3292,7 @@
   },
   {
     "type": "nil",
-    "named": false
+    "named": true
   },
   {
     "type": "not_in",
