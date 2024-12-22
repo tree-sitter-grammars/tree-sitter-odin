@@ -284,22 +284,33 @@ module.exports = grammar({
       ')',
     ),
     parameter: $ => prec.right(seq(
+      commaSep1($._param_header),
+      optional($._param_type),
+    )),
+    _param_header: $ => seq(
       optional($.tag),
       optional('using'),
-      commaSep1(seq(
-        optional('$'),
-        choice(
-          $.identifier,
-          $.variadic_type,
-          $.array_type,
-          $.pointer_type,
-          $.field_type,
-          $._procedure_type,
-        ),
-      )),
-      optional(seq(':', optional($.tag), $.type, optional($.identifier), optional(seq('=', $.expression)))),
-    )),
+      optional('$'),
+      choice(
+        $.identifier,
+        $.variadic_type,
+        $.array_type,
+        $.pointer_type,
+        $.field_type,
+        $._procedure_type,
+      ),
+    ),
+    _param_type: $ => seq(
+      ':',
+      optional($.tag),
+      $.type,
+      optional($.identifier),
+      optional(seq('=', $.expression)),
+    ),
+
+
     default_parameter: $ => seq(
+      optional($.tag),
       optional('using'),
       $.identifier,
       ':=',
