@@ -106,7 +106,7 @@ bool tree_sitter_odin_external_scanner_scan(void *payload, TSLexer *lexer, const
                     }
                     break;
                 default:
-                    if (isdigit(lexer->lookahead)) {
+                    if (lexer->lookahead <= 255 && isdigit(lexer->lookahead)) {
                         advance(lexer);
                         if (found_decimal) {
                             found_number_after_decimal = true;
