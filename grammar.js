@@ -81,6 +81,7 @@ module.exports = grammar({
     tagged_block: $ => seq($.tag, $.block),
 
     declaration: $ => choice(
+      $.build_tag,
       $.package_declaration,
       $.import_declaration,
       $.procedure_declaration,
@@ -97,6 +98,8 @@ module.exports = grammar({
       $.when_statement,
       $._expression_no_tag,
     ),
+
+    build_tag: $ => seq('#+', /.+/),
 
     package_declaration: $ => seq('package', $.identifier),
 
