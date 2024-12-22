@@ -108,7 +108,15 @@ module.exports = grammar({
       optional('foreign'),
       'import',
       optional(field('alias', $.identifier)),
-      choice($.string, seq('{', commaSep1($.string), optional(','), '}')),
+      choice(
+        $.string,
+        seq(
+          '{',
+          commaSep1(choice($.string, $.identifier)),
+          optional(','),
+          '}',
+        ),
+      ),
     ),
 
     procedure_declaration: $ => seq(
