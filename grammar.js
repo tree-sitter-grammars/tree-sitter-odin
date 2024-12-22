@@ -269,7 +269,7 @@ module.exports = grammar({
         $.identifier,
         seq(
           '(',
-          commaSep1(seq($.identifier, optional(seq('=', choice($.literal, $.identifier))))),
+          commaSep1(seq($.identifier, optional(seq('=', $.expression)))),
           ')',
         ),
       ),
