@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(tree-sitter-odin
-        VERSION "1.2.0"
+        VERSION "1.3.0"
         DESCRIPTION "Odin grammar for tree-sitter"
         HOMEPAGE_URL "https://github.com/tree-sitter-grammars/tree-sitter-odin"
         LANGUAGES C)
