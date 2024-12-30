@@ -809,7 +809,7 @@ module.exports = grammar({
       '}',
     ),
 
-    named_type: $ => prec.right(seq($.identifier, ':', $.type, optional(seq('=', $.literal)))),
+    named_type: $ => prec.right(seq(commaSep1($.identifier), ':', $.type, optional(seq('=', $.literal)))),
 
     default_type: $ => seq($.identifier, ':=', $.expression),
 
