@@ -6,6 +6,7 @@
   (struct)
   (parameters)
   (tuple_type)
+  (struct_type)
   (call_expression)
   (switch_case)
 ] @indent.begin
@@ -24,6 +25,7 @@
 (union_declaration "}" @indent.branch @indent.end)
 (struct_declaration "}" @indent.branch @indent.end)
 (struct "}" @indent.branch @indent.end)
+(struct_type "}" @indent.branch @indent.end)
 
 [
   (comment)
