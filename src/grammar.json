@@ -7794,5 +7794,6 @@
     "expression",
     "literal",
     "statement"
-  ]
+  ],
+  "reserved": {}
 }

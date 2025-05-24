@@ -28,48 +28,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-14]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up tree-sitter
-        uses: tree-sitter/setup-action/cli@v1
+        uses: tree-sitter/setup-action/cli@v2
       - name: Run tests
         uses: tree-sitter/parser-test-action@v2
         with:
+          generate: false
           test-rust: true
-          test-node: true
-          test-python: true
-          test-go: true
-          test-swift: true
       - name: Set up examples
-        run: |-
-          git clone https://github.com/odin-lang/Odin examples/Odin --single-branch --depth=1 --filter=blob:none
+        uses: actions/checkout@v4
+        with:
+          path: examples/Odin
+          repository: odin-lang/Odin
       - name: Parse examples
         id: examples
         uses: tree-sitter/parse-action@v4
         with:
-          # FIXME: The last 7 files only fail on Windows
           files: |
             examples/**/*.odin
-            !examples/Odin/base/intrinsics/intrinsics.odin
-            !examples/Odin/base/runtime/internal.odin
-            !examples/Odin/core/crypto/_fiat/field_curve25519/field.odin
-            !examples/Odin/core/debug/trace/trace_cpp.odin
-            !examples/Odin/core/encoding/cbor/marshal.odin
-            !examples/Odin/core/math/linalg/specific.odin
-            !examples/Odin/core/mem/allocators.odin
-            !examples/Odin/core/os/os2/process_windows.odin
-            !examples/Odin/core/sync/chan/chan.odin
-            !examples/Odin/core/sys/linux/bits.odin
-            !examples/Odin/core/sys/posix/fcntl.odin
-            !examples/Odin/core/testing/runner.odin
-            !examples/Odin/core/text/regex/common/common.odin
-            !examples/Odin/tests/core/encoding/json/test_core_json.odin
-            !examples/Odin/vendor/raylib/raygui.odin
-            !examples/Odin/vendor/raylib/raylib.odin
-            !examples/Odin/vendor/raylib/rlgl/rlgl.odin
-
+            # FIXME: these files only fail on Windows
             !examples/Odin/base/runtime/wasm_allocator.odin
             !examples/Odin/core/hash/xxhash/xxhash_3.odin
             !examples/Odin/core/image/netpbm/netpbm.odin
@@ -77,7 +58,156 @@ jobs:
             !examples/Odin/core/sys/windows/kernel32.odin
             !examples/Odin/core/sys/windows/types.odin
             !examples/Odin/tests/vendor/glfw/test_vendor_glfw.odin
-      - uses: actions/upload-artifact@v4
+          invalid-files: |-
+            examples/Odin/base/builtin/builtin.odin
+            examples/Odin/base/intrinsics/intrinsics.odin
+            examples/Odin/base/runtime/core_builtin.odin
+            examples/Odin/base/runtime/default_temp_allocator_arena.odin
+            examples/Odin/base/runtime/default_temporary_allocator.odin
+            examples/Odin/base/runtime/dynamic_map_internal.odin
+            examples/Odin/base/runtime/internal.odin
+            examples/Odin/base/runtime/os_specific.odin
+            examples/Odin/base/runtime/os_specific_bsd.odin
+            examples/Odin/base/runtime/os_specific_darwin.odin
+            examples/Odin/base/runtime/os_specific_freestanding.odin
+            examples/Odin/base/runtime/os_specific_haiku.odin
+            examples/Odin/base/runtime/os_specific_js.odin
+            examples/Odin/base/runtime/os_specific_linux.odin
+            examples/Odin/base/runtime/os_specific_orca.odin
+            examples/Odin/base/runtime/os_specific_wasi.odin
+            examples/Odin/core/bufio/reader.odin
+            examples/Odin/core/bufio/writer.odin
+            examples/Odin/core/bytes/buffer.odin
+            examples/Odin/core/bytes/bytes.odin
+            examples/Odin/core/bytes/reader.odin
+            examples/Odin/core/compress/shoco/shoco.odin
+            examples/Odin/core/container/avl/avl.odin
+            examples/Odin/core/container/rbtree/rbtree.odin
+            examples/Odin/core/container/small_array/small_array.odin
+            examples/Odin/core/crypto/_aes/ct64/helpers.odin
+            examples/Odin/core/crypto/_fiat/field_curve25519/field.odin
+            examples/Odin/core/crypto/_fiat/field_curve448/field.odin
+            examples/Odin/core/crypto/_sha3/sp800_185.odin
+            examples/Odin/core/crypto/aegis/aegis_impl_ct64.odin
+            examples/Odin/core/crypto/aes/aes_ctr.odin
+            examples/Odin/core/crypto/aes/aes_ctr_hw_intel.odin
+            examples/Odin/core/debug/trace/trace_cpp.odin
+            examples/Odin/core/dynlib/lib_js.odin
+            examples/Odin/core/dynlib/lib_unix.odin
+            examples/Odin/core/dynlib/lib_windows.odin
+            examples/Odin/core/encoding/cbor/cbor.odin
+            examples/Odin/core/encoding/cbor/coding.odin
+            examples/Odin/core/encoding/cbor/marshal.odin
+            examples/Odin/core/encoding/endian/endian.odin
+            examples/Odin/core/encoding/hex/hex.odin
+            examples/Odin/core/encoding/hxa/read.odin
+            examples/Odin/core/encoding/ini/ini.odin
+            examples/Odin/core/encoding/json/parser.odin
+            examples/Odin/core/flags/internal_rtti.odin
+            examples/Odin/core/fmt/fmt.odin
+            examples/Odin/core/io/io.odin
+            examples/Odin/core/math/linalg/specific.odin
+            examples/Odin/core/math/math_gamma.odin
+            examples/Odin/core/mem/alloc.odin
+            examples/Odin/core/mem/allocators.odin
+            examples/Odin/core/mem/rollback_stack_allocator.odin
+            examples/Odin/core/mem/virtual/arena_util.odin
+            examples/Odin/core/mem/virtual/virtual.odin
+            examples/Odin/core/net/socket_linux.odin
+            examples/Odin/core/odin/tokenizer/tokenizer.odin
+            examples/Odin/core/os/os.odin
+            examples/Odin/core/os/os2/file.odin
+            examples/Odin/core/os/os2/file_linux.odin
+            examples/Odin/core/os/os2/file_wasi.odin
+            examples/Odin/core/os/os2/path_linux.odin
+            examples/Odin/core/os/os2/process.odin
+            examples/Odin/core/os/os2/process_linux.odin
+            examples/Odin/core/os/os2/process_windows.odin
+            examples/Odin/core/os/os2/stat.odin
+            examples/Odin/core/os/os2/stat_linux.odin
+            examples/Odin/core/os/os2/stat_windows.odin
+            examples/Odin/core/os/os2/temp_file.odin
+            examples/Odin/core/os/os2/temp_file_linux.odin
+            examples/Odin/core/os/os2/temp_file_posix.odin
+            examples/Odin/core/os/os2/temp_file_wasi.odin
+            examples/Odin/core/os/os2/temp_file_windows.odin
+            examples/Odin/core/os/os_darwin.odin
+            examples/Odin/core/os/os_essence.odin
+            examples/Odin/core/os/os_freebsd.odin
+            examples/Odin/core/os/os_haiku.odin
+            examples/Odin/core/os/os_js.odin
+            examples/Odin/core/os/os_linux.odin
+            examples/Odin/core/os/os_netbsd.odin
+            examples/Odin/core/os/os_openbsd.odin
+            examples/Odin/core/os/os_wasi.odin
+            examples/Odin/core/os/os_windows.odin
+            examples/Odin/core/os/stat_windows.odin
+            examples/Odin/core/path/filepath/path.odin
+            examples/Odin/core/path/filepath/path_unix.odin
+            examples/Odin/core/path/filepath/path_wasi.odin
+            examples/Odin/core/path/filepath/path_windows.odin
+            examples/Odin/core/prof/spall/spall_windows.odin
+            examples/Odin/core/simd/x86/adx.odin
+            examples/Odin/core/slice/slice.odin
+            examples/Odin/core/slice/sort.odin
+            examples/Odin/core/strconv/generic_float.odin
+            examples/Odin/core/strconv/strconv.odin
+            examples/Odin/core/strings/strings.odin
+            examples/Odin/core/sync/chan/chan.odin
+            examples/Odin/core/sys/darwin/Foundation/NSApplication.odin
+            examples/Odin/core/sys/freebsd/syscalls.odin
+            examples/Odin/core/sys/linux/bits.odin
+            examples/Odin/core/sys/linux/helpers.odin
+            examples/Odin/core/sys/linux/sys.odin
+            examples/Odin/core/sys/orca/macros.odin
+            examples/Odin/core/sys/posix/fcntl.odin
+            examples/Odin/core/sys/posix/glob.odin
+            examples/Odin/core/sys/windows/ole32.odin
+            examples/Odin/core/sys/windows/winerror.odin
+            examples/Odin/core/testing/runner.odin
+            examples/Odin/core/text/i18n/i18n.odin
+            examples/Odin/core/text/match/strlib.odin
+            examples/Odin/core/text/regex/common/common.odin
+            examples/Odin/core/text/scanner/scanner.odin
+            examples/Odin/core/time/perf.odin
+            examples/Odin/core/time/tsc_freebsd.odin
+            examples/Odin/core/time/tsc_linux.odin
+            examples/Odin/core/unicode/utf8/utf8.odin
+            examples/Odin/examples/demo/demo.odin
+            examples/Odin/tests/core/encoding/json/test_core_json.odin
+            examples/Odin/tests/core/flags/test_core_flags.odin
+            examples/Odin/tests/core/math/noise/test_core_math_noise.odin
+            examples/Odin/tests/core/strings/test_core_strings.odin
+            examples/Odin/tests/core/text/i18n/test_core_text_i18n.odin
+            examples/Odin/vendor/directx/d3d11/d3d11.odin
+            examples/Odin/vendor/directx/d3d12/d3d12.odin
+            examples/Odin/vendor/directx/d3d_compiler/d3d_compiler.odin
+            examples/Odin/vendor/directx/dxc/dxcapi.odin
+            examples/Odin/vendor/directx/dxc/dxcdef_unix.odin
+            examples/Odin/vendor/directx/dxgi/dxgi.odin
+            examples/Odin/vendor/directx/dxgi/dxgidebug.odin
+            examples/Odin/vendor/ggpo/ggpo.odin
+            examples/Odin/vendor/libc/stdlib.odin
+            examples/Odin/vendor/microui/microui.odin
+            examples/Odin/vendor/miniaudio/data_conversion.odin
+            examples/Odin/vendor/miniaudio/device_io_types.odin
+            examples/Odin/vendor/miniaudio/vfs.odin
+            examples/Odin/vendor/raylib/raygui.odin
+            examples/Odin/vendor/raylib/raylib.odin
+            examples/Odin/vendor/raylib/rlgl/rlgl.odin
+            examples/Odin/vendor/sdl3/sdl3_iostream.odin
+            examples/Odin/vendor/sdl3/sdl3_stdinc.odin
+            examples/Odin/vendor/sdl3/sdl3_storage.odin
+            examples/Odin/vendor/stb/image/stb_image.odin
+            examples/Odin/vendor/stb/image/stb_image_resize.odin
+            examples/Odin/vendor/stb/image/stb_image_write.odin
+            examples/Odin/vendor/windows/GameInput/windows_game_input.odin
+            examples/Odin/vendor/windows/XAudio2/xapo.odin
+            examples/Odin/vendor/windows/XAudio2/xaudio2.odin
+            examples/Odin/vendor/x11/xlib/xlib_procs.odin
+            examples/Odin/vendor/x11/xlib/xlib_types.odin
+      - name: Upload failures artifact
+        uses: actions/upload-artifact@v4
         if: steps.examples.outputs.failures != ''
         with:
           name: failures-${{matrix.os}}

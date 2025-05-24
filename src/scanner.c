@@ -5,6 +5,13 @@
 #include <string.h>
 #include <wctype.h>
 
+#ifdef _MSC_VER
+#pragma warning(disable : 4100)
+#elif defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
+
 enum {
     NEWLINE,
     BACKSLASH,
@@ -283,3 +290,9 @@ backslash:
 }
 
 void tree_sitter_odin_external_scanner_destroy(void *payload) {}
+
+#ifdef _MSC_VER
+#pragma warning(default : 4100)
+#elif defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
