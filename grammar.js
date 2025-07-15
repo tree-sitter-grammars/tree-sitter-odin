@@ -138,7 +138,7 @@ module.exports = grammar({
       )),
       optional($.where_clause),
       optional($.tag),
-      optional(choice($.block, $.uninitialized)),
+      optional(field('body', choice($.block, $.uninitialized))),
     )),
 
     where_clause: $ => prec.right(seq('where', commaSep1(prec.right($.expression)))),

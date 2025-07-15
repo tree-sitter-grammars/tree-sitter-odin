@@ -511,17 +511,21 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "block"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "uninitialized"
-                  }
-                ]
+                "type": "FIELD",
+                "name": "body",
+                "content": {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "block"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "uninitialized"
+                    }
+                  ]
+                }
               },
               {
                 "type": "BLANK"
@@ -7794,5 +7798,6 @@
     "expression",
     "literal",
     "statement"
-  ]
+  ],
+  "reserved": {}
 }
