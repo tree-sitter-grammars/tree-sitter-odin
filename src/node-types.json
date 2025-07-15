@@ -1982,15 +1982,26 @@
   {
     "type": "procedure",
     "named": true,
-    "fields": {},
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          },
+          {
+            "type": "uninitialized",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "block",
-          "named": true
-        },
         {
           "type": "calling_convention",
           "named": true
@@ -2009,10 +2020,6 @@
         },
         {
           "type": "type",
-          "named": true
-        },
-        {
-          "type": "uninitialized",
           "named": true
         },
         {
@@ -2048,15 +2055,26 @@
   {
     "type": "procedure_type",
     "named": true,
-    "fields": {},
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          },
+          {
+            "type": "uninitialized",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
-        {
-          "type": "block",
-          "named": true
-        },
         {
           "type": "calling_convention",
           "named": true
@@ -2075,10 +2093,6 @@
         },
         {
           "type": "type",
-          "named": true
-        },
-        {
-          "type": "uninitialized",
           "named": true
         },
         {
@@ -3196,7 +3210,8 @@
   },
   {
     "type": "block_comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "break",
@@ -3212,7 +3227,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "continue",
