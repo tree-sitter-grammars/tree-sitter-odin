@@ -839,6 +839,7 @@ module.exports = grammar({
       $.boolean,
       $.nil,
       $.uninitialized,
+      $.empty_struct_literal,
     )),
 
     struct: $ => seq(
@@ -854,6 +855,14 @@ module.exports = grammar({
       )),
       '}',
     ),
+
+    empty_struct_literal: $ => prec(1, seq(
+      'struct',
+      '{',
+      '}',
+      '{',
+      '}'
+    )),
 
     map: $ => seq(
       'map',

@@ -1,5 +1,4 @@
 {
-  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "odin",
   "word": "identifier",
   "rules": {
@@ -6778,6 +6777,10 @@
           {
             "type": "SYMBOL",
             "name": "uninitialized"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "empty_struct_literal"
           }
         ]
       }
@@ -6975,6 +6978,35 @@
           "value": "}"
         }
       ]
+    },
+    "empty_struct_literal": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "struct"
+          },
+          {
+            "type": "STRING",
+            "value": "{"
+          },
+          {
+            "type": "STRING",
+            "value": "}"
+          },
+          {
+            "type": "STRING",
+            "value": "{"
+          },
+          {
+            "type": "STRING",
+            "value": "}"
+          }
+        ]
+      }
     },
     "map": {
       "type": "SEQ",

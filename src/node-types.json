@@ -276,6 +276,10 @@
         "named": true
       },
       {
+        "type": "empty_struct_literal",
+        "named": true
+      },
+      {
         "type": "float",
         "named": true
       },
@@ -1287,6 +1291,11 @@
     }
   },
   {
+    "type": "empty_struct_literal",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "empty_type",
     "named": true,
     "fields": {}
@@ -1764,6 +1773,11 @@
     }
   },
   {
+    "type": "nil",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "or_break_expression",
     "named": true,
     "fields": {},
@@ -2187,7 +2201,6 @@
   {
     "type": "source_file",
     "named": true,
-    "root": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -3292,7 +3305,7 @@
   },
   {
     "type": "nil",
-    "named": true
+    "named": false
   },
   {
     "type": "not_in",
