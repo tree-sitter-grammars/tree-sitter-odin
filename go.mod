@@ -1,4 +1,4 @@
-module tree-sitter-grammars/tree-sitter-odin
+module github.com/tree-sitter-grammars/tree-sitter-odin
 
 go 1.22
 
