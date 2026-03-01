@@ -80,3 +80,79 @@ Build Tags
 
 (source_file
   (build_tag))
+
+====================
+Typed proc declaration
+====================
+
+grass_map_generator_generate: Map_Generator_Generate_Proc : proc(
+    data: rawptr,
+    world_origin: [2]f32,
+) -> Map_Chunk {
+    return nil
+}
+
+after: int : 1
+
+---
+
+(source_file
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (procedure
+      (parameters
+        (parameter
+          (identifier)
+          (type
+            (identifier)))
+        (parameter
+          (identifier)
+          (type
+            (array_type
+              (number)
+              (type
+                (identifier))))))
+      (type
+        (identifier))
+      (block
+        (return_statement
+          (nil)))))
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (number)))
+
+====================
+Tagged typed proc declaration
+====================
+
+update: Update_Proc : #force_inline proc(data: rawptr) {
+    return
+}
+
+after: int : 1
+
+---
+
+(source_file
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (tag)
+    (procedure
+      (parameters
+        (parameter
+          (identifier)
+          (type
+            (identifier))))
+      (block
+        (return_statement))))
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (number)))
