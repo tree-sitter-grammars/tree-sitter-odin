@@ -259,7 +259,8 @@ module.exports = grammar({
       ':',
       $.type,
       ':',
-      $.expression,
+      optional($.tag),
+      choice($._expression_no_tag, $.procedure),
     )),
 
     foreign_block: $ => seq(

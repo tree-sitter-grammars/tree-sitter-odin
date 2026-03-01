@@ -1549,8 +1549,29 @@
             "value": ":"
           },
           {
-            "type": "SYMBOL",
-            "name": "expression"
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "tag"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "_expression_no_tag"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "procedure"
+              }
+            ]
           }
         ]
       }

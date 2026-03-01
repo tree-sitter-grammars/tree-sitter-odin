@@ -80,3 +80,79 @@ Build Tags
 
 (source_file
   (build_tag))
+
+====================
+Typed proc declaration
+====================
+
+typed_proc_value: Proc_Type : proc(
+    input: rawptr,
+    coords: [2]f32,
+) -> Result_Type {
+    return nil
+}
+
+after: int : 1
+
+---
+
+(source_file
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (procedure
+      (parameters
+        (parameter
+          (identifier)
+          (type
+            (identifier)))
+        (parameter
+          (identifier)
+          (type
+            (array_type
+              (number)
+              (type
+                (identifier))))))
+      (type
+        (identifier))
+      (block
+        (return_statement
+          (nil)))))
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (number)))
+
+====================
+Tagged typed proc declaration
+====================
+
+tagged_proc_value: Proc_Type : #force_inline proc(input: rawptr) {
+    return
+}
+
+after: int : 1
+
+---
+
+(source_file
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (tag)
+    (procedure
+      (parameters
+        (parameter
+          (identifier)
+          (type
+            (identifier))))
+      (block
+        (return_statement))))
+  (const_type_declaration
+    (identifier)
+    (type
+      (identifier))
+    (number)))
