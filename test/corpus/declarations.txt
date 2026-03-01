@@ -85,10 +85,10 @@ Build Tags
 Typed proc declaration
 ====================
 
-grass_map_generator_generate: Map_Generator_Generate_Proc : proc(
-    data: rawptr,
-    world_origin: [2]f32,
-) -> Map_Chunk {
+typed_proc_value: Proc_Type : proc(
+    input: rawptr,
+    coords: [2]f32,
+) -> Result_Type {
     return nil
 }
 
@@ -129,7 +129,7 @@ after: int : 1
 Tagged typed proc declaration
 ====================
 
-update: Update_Proc : #force_inline proc(data: rawptr) {
+tagged_proc_value: Proc_Type : #force_inline proc(input: rawptr) {
     return
 }
 
