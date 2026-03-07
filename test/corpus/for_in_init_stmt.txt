@@ -1,0 +1,25 @@
+==================
+for-in with init statement
+==================
+
+foo :: proc() {
+	for x := foo(); v in bar {
+	}
+}
+
+---
+
+(source_file
+    (procedure_declaration
+    (identifier)
+    (procedure
+        (parameters)
+        (block
+        (for_statement
+            initializer: (assignment_statement
+            (identifier)
+            (call_expression
+                function: (identifier)))
+            (identifier)
+            (identifier)
+            consequence: (block))))))

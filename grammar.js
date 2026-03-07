@@ -464,6 +464,10 @@ module.exports = grammar({
       field('consequence', choice($.block, seq('do', $.statement))),
     ),
     _for_in_expression: $ => seq(
+      optional(seq(
+        optional(field('initializer', choice($.assignment_statement, $.update_statement, $.var_declaration))),
+        ';',
+      )),
       commaSep($.expression),
       'in',
       $.expression,
