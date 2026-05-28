@@ -1,0 +1,991 @@
+// Odin grammar for tree-sitter (native DSL).
+// Translated from grammar.js.
+
+let PREC = {
+    PARENTHESES: -1,
+    ASSIGNMENT: 1,
+    TERNARY: 2,
+    LOGICAL_OR: 3,
+    LOGICAL_AND: 4,
+    COMPARE: 5,
+    EQUALITY: 6,
+    BITWISE_OR: 7,
+    BITWISE_XOR: 8,
+    BITWISE_AND: 9,
+    BITWISE_AND_NOT: 10,
+    SHIFT: 11,
+    ADD: 12,
+    MULTIPLY: 13,
+    CAST: 14,
+    IN: 15,
+    UNARY: 16,
+    CALL: 17,
+    MEMBER: 18,
+    MATRIX: 19,
+    VARIADIC: 20,
+}
+
+macro sep1(rule: rule_t, sep: rule_t) rule_t {
+    seq(rule, repeat(seq(sep, rule)))
+}
+
+macro sep_zero(rule: rule_t, sep: rule_t) rule_t {
+    optional(seq(rule, repeat(seq(sep, optional(rule)))))
+}
+
+macro comma_sep1(rule: rule_t) rule_t { sep1(rule, ",") }
+
+macro comma_sep(rule: rule_t) rule_t { optional(comma_sep1(rule)) }
+
+macro comma_external_sep1(rule: rule_t) rule_t {
+    sep1(rule, choice(",", alias(_nl_comma, ",")))
+}
+
+macro binop_l(p: int_t, op: rule_t) rule_t {
+    prec_left(p, seq(
+        field(left, expression),
+        field(operator, op),
+        field(right, expression),
+    ))
+}
+
+grammar {
+    language: "odin",
+    conflicts: [[array_type], [_expression_no_tag, struct]],
+    externals: [_newline, _backslash, _nl_comma, float, block_comment, "{", "\""],
+    extras: [comment, block_comment, regexp(r"\s"), _backslash],
+    supertypes: [declaration, expression, literal, statement],
+    word: identifier,
+}
+
+rule source_file {
+    seq(repeat(seq(declaration, _separator)), optional(declaration))
+}
+
+rule block {
+    prec(2, seq(
+        "{",
+        sep_zero(seq(optional(tag), statement), _separator),
+        "}",
+    ))
+}
+
+rule tagged_block { seq(tag, block) }
+
+rule declaration {
+    choice(
+        build_tag, package_declaration, import_declaration,
+        procedure_declaration, overloaded_procedure_declaration,
+        struct_declaration, enum_declaration, union_declaration,
+        bit_field_declaration, variable_declaration, var_declaration,
+        const_declaration, const_type_declaration,
+        foreign_block, when_statement, _expression_no_tag,
+    )
+}
+
+rule build_tag { seq("#+", regexp(r".+")) }
+
+rule package_declaration { seq("package", identifier) }
+
+rule import_declaration {
+    seq(
+        optional(attributes),
+        optional("foreign"),
+        "import",
+        optional(field(alias, identifier)),
+        choice(
+            string,
+            seq("{", comma_sep1(choice(string, identifier)), optional(","), "}"),
+        ),
+    )
+}
+
+rule procedure_declaration {
+    seq(
+        optional(attributes),
+        expression,
+        "::",
+        optional(tag),
+        procedure,
+    )
+}
+
+rule procedure {
+    prec_right(0, seq(
+        "proc",
+        optional(calling_convention),
+        parameters,
+        optional(seq(
+            "->",
+            optional(tag),
+            choice(type, named_type),
+            optional(tag),
+        )),
+        optional(where_clause),
+        optional(tag),
+        optional(choice(block, uninitialized)),
+    ))
+}
+
+rule where_clause {
+    prec_right(0, seq("where", comma_sep1(prec_right(0, expression))))
+}
+
+rule calling_convention {
+    choice(
+        "\"odin\"", "\"contextless\"", "\"stdcall\"", "\"std\"",
+        "\"cdecl\"", "\"c\"", "\"fastcall\"", "\"fast\"",
+        "\"none\"", "\"system\"",
+    )
+}
+
+rule overloaded_procedure_declaration {
+    seq(
+        optional(attributes),
+        expression,
+        "::",
+        "proc",
+        "{",
+        optional(seq(comma_sep1(expression), optional(","))),
+        "}",
+    )
+}
+
+rule struct_declaration {
+    seq(
+        optional(attributes),
+        expression,
+        "::",
+        "struct",
+        optional(polymorphic_parameters),
+        repeat(seq(tag, optional(choice(identifier, number)))),
+        optional(where_clause),
+        "{",
+        optional(seq(comma_sep1(r#field), optional(","))),
+        "}",
+    )
+}
+
+rule enum_declaration {
+    seq(
+        optional(attributes),
+        optional("using"),
+        expression,
+        "::",
+        "enum",
+        optional(type),
+        "{",
+        optional(seq(
+            comma_sep1(seq(identifier, optional(seq("=", expression)))),
+            optional(","),
+        )),
+        "}",
+    )
+}
+
+rule union_declaration {
+    seq(
+        optional(attributes),
+        expression,
+        "::",
+        "union",
+        optional(polymorphic_parameters),
+        optional(tag),
+        "{",
+        optional(seq(comma_sep1(type), optional(","))),
+        "}",
+    )
+}
+
+rule bit_field_declaration {
+    seq(
+        optional(attributes),
+        expression,
+        "::",
+        "bit_field",
+        type,
+        "{",
+        optional(seq(
+            comma_sep1(seq(identifier, ":", type, "|", expression)),
+            optional(","),
+        )),
+        "}",
+    )
+}
+
+rule variable_declaration {
+    seq(
+        optional(attributes),
+        comma_sep1(expression),
+        ":=",
+        comma_sep1(choice(expression, procedure)),
+        optional(","),
+    )
+}
+
+rule const_declaration {
+    seq(
+        optional(attributes),
+        comma_sep1(expression),
+        "::",
+        optional(tag),
+        comma_sep1(choice(
+            expression,
+            seq(alias("#type", tag), type),
+            array_type,
+            bit_set_type,
+            pointer_type,
+        )),
+    )
+}
+
+rule const_type_declaration {
+    prec(1, seq(
+        optional(attributes),
+        expression,
+        ":",
+        type,
+        ":",
+        expression,
+    ))
+}
+
+rule foreign_block {
+    seq(optional(attributes), "foreign", optional(identifier), block)
+}
+
+rule attributes { repeat1(attribute) }
+
+rule attribute {
+    seq(
+        "@",
+        choice(
+            identifier,
+            seq(
+                "(",
+                comma_sep1(seq(identifier, optional(seq("=", expression)))),
+                ")",
+            ),
+        ),
+    )
+}
+
+rule parameters {
+    seq(
+        "(",
+        optional(seq(
+            comma_sep1(choice(parameter, default_parameter)),
+            optional(","),
+        )),
+        ")",
+    )
+}
+
+rule parameter {
+    prec_right(0, seq(
+        comma_sep1(_param_header),
+        optional(_param_type),
+    ))
+}
+
+rule _param_header {
+    seq(
+        optional(tag),
+        optional("using"),
+        optional("$"),
+        choice(
+            identifier, variadic_type, array_type, pointer_type,
+            field_type, _procedure_type,
+        ),
+    )
+}
+
+rule _param_type {
+    seq(
+        ":",
+        optional(tag),
+        type,
+        optional(identifier),
+        optional(seq("=", expression)),
+    )
+}
+
+rule default_parameter {
+    seq(
+        optional(tag),
+        optional("using"),
+        identifier,
+        ":=",
+        expression,
+    )
+}
+
+rule polymorphic_parameters {
+    seq(
+        "(",
+        comma_sep1(seq(
+            comma_sep1(seq(optional("$"), identifier)),
+            ":",
+            type,
+        )),
+        ")",
+    )
+}
+
+rule r#field {
+    prec_right(0, seq(
+        comma_sep1(seq(optional(tag), optional("using"), identifier)),
+        ":",
+        optional(tag),
+        type,
+        optional(string),
+    ))
+}
+
+rule statement {
+    prec(1, choice(
+        procedure_declaration, overloaded_procedure_declaration,
+        struct_declaration, enum_declaration, union_declaration,
+        bit_field_declaration, const_declaration, import_declaration,
+        assignment_statement, update_statement, if_statement, when_statement,
+        for_statement, switch_statement, defer_statement,
+        break_statement, continue_statement, fallthrough_statement,
+        label_statement, using_statement, return_statement,
+        _expression_no_tag, var_declaration, foreign_block, tagged_block, block,
+    ))
+}
+
+rule assignment_statement {
+    prec(PREC.ASSIGNMENT, seq(
+        optional(seq(attributes, optional(tag))),
+        comma_sep1(expression),
+        choice("=", ":="),
+        optional(tag),
+        comma_sep1(choice(expression, procedure)),
+    ))
+}
+
+rule update_statement {
+    seq(
+        comma_sep1(expression),
+        choice("+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=", "||=", "&&=", "&~="),
+        comma_sep1(expression),
+    )
+}
+
+rule if_statement {
+    prec_right(0, seq(
+        "if",
+        optional(seq(
+            optional(field(initializer, choice(assignment_statement, update_statement, var_declaration))),
+            ";",
+        )),
+        optional(tag),
+        field(condition, expression),
+        choice(
+            field(consequence, block),
+            seq("do", field(consequence, statement)),
+        ),
+        repeat(else_if_clause),
+        optional(else_clause),
+    ))
+}
+
+rule else_if_clause {
+    seq(
+        "else", "if",
+        optional(seq(
+            optional(field(initializer, assignment_statement)),
+            ";",
+        )),
+        field(condition, expression),
+        choice(
+            field(consequence, block),
+            seq("do", field(consequence, statement)),
+        ),
+    )
+}
+
+rule else_clause {
+    seq(
+        "else",
+        choice(
+            field(consequence, block),
+            seq("do", field(consequence, statement)),
+        ),
+    )
+}
+
+rule when_statement {
+    prec_right(0, seq(
+        "when",
+        expression,
+        choice(block, seq("do", statement)),
+        repeat(else_when_clause),
+        optional(else_clause),
+    ))
+}
+
+rule else_when_clause {
+    seq("else", "when", expression, block)
+}
+
+rule for_statement {
+    seq(
+        "for",
+        optional(choice(
+            seq(
+                optional(seq(
+                    optional(field(initializer, choice(assignment_statement, update_statement, var_declaration))),
+                    ";",
+                )),
+                optional(field(condition, expression)),
+                optional(seq(
+                    ";",
+                    optional(field(post, choice(
+                        update_statement,
+                        alias(_simple_assignment_statement, assignment_statement),
+                    ))),
+                )),
+            ),
+            _for_in_expression,
+        )),
+        field(consequence, choice(block, seq("do", statement))),
+    )
+}
+
+rule _for_in_expression {
+    seq(comma_sep(expression), "in", expression)
+}
+
+rule _simple_assignment_statement {
+    seq(
+        optional(attributes),
+        comma_sep1(expression),
+        choice("=", ":="),
+        comma_sep1(choice(expression)),
+    )
+}
+
+rule switch_statement {
+    seq(
+        "switch",
+        optional(seq(
+            optional("in"),
+            field(condition, choice(
+                expression,
+                seq(assignment_statement, _separator, optional(expression)),
+            )),
+        )),
+        "{",
+        repeat(switch_case),
+        "}",
+    )
+}
+
+rule switch_case {
+    seq(
+        "case",
+        comma_sep(field(condition, choice(expression, array_type, pointer_type))),
+        ":",
+        sep_zero(seq(optional(tag), statement), _separator),
+    )
+}
+
+rule defer_statement { seq("defer", statement) }
+
+rule break_statement { seq("break", optional(identifier)) }
+
+rule continue_statement { seq("continue", optional(identifier)) }
+
+rule fallthrough_statement { "fallthrough" }
+
+rule var_declaration {
+    prec_right(0, seq(
+        optional(attributes),
+        comma_sep1(expression),
+        ":",
+        optional(tag),
+        choice(
+            seq(type, optional(seq(choice("=", ":"), comma_sep1(expression)))),
+        ),
+    ))
+}
+
+rule return_statement {
+    prec_right(1, seq(
+        "return",
+        optional(tag),
+        optional(seq(
+            comma_external_sep1(choice(expression, _procedure_type)),
+            optional(","),
+        )),
+    ))
+}
+
+rule label_statement {
+    seq(
+        expression,
+        ":",
+        choice(if_statement, for_statement, switch_statement, block),
+    )
+}
+
+rule using_statement { seq("using", expression) }
+
+rule expression {
+    prec_left(0, choice(_expression_no_tag, tag))
+}
+
+rule _expression_no_tag {
+    choice(
+        unary_expression, binary_expression, ternary_expression,
+        call_expression, selector_call_expression,
+        member_expression, index_expression, slice_expression, range_expression,
+        cast_expression, parenthesized_expression, in_expression,
+        variadic_expression, or_return_expression,
+        or_continue_expression, or_break_expression,
+        identifier, address,
+        map_type, distinct_type, matrix_type, literal,
+        "?",
+    )
+}
+
+rule unary_expression {
+    prec_right(PREC.UNARY, seq(
+        field(operator, choice("+", "-", "~", "!", "&")),
+        field(argument, expression),
+    ))
+}
+
+rule binary_expression {
+    choice(
+        binop_l(PREC.LOGICAL_OR, "||"),
+        binop_l(PREC.LOGICAL_OR, "or_else"),
+        binop_l(PREC.LOGICAL_AND, "&&"),
+        binop_l(PREC.COMPARE, ">"),
+        binop_l(PREC.COMPARE, ">="),
+        binop_l(PREC.COMPARE, "<="),
+        binop_l(PREC.COMPARE, "<"),
+        binop_l(PREC.EQUALITY, "=="),
+        binop_l(PREC.EQUALITY, "!="),
+        binop_l(PREC.EQUALITY, "~="),
+        binop_l(PREC.BITWISE_OR, "|"),
+        binop_l(PREC.BITWISE_XOR, "~"),
+        binop_l(PREC.BITWISE_AND, "&"),
+        binop_l(PREC.BITWISE_AND_NOT, "&~"),
+        binop_l(PREC.SHIFT, "<<"),
+        binop_l(PREC.SHIFT, ">>"),
+        binop_l(PREC.ADD, "+"),
+        binop_l(PREC.ADD, "-"),
+        binop_l(PREC.MULTIPLY, "*"),
+        binop_l(PREC.MULTIPLY, "/"),
+        binop_l(PREC.MULTIPLY, "%"),
+        binop_l(PREC.MULTIPLY, "%%"),
+    )
+}
+
+rule ternary_expression {
+    prec_right(0, seq(
+        field(condition, choice(_expression_no_tag, struct)),
+        choice(
+            prec(PREC.TERNARY, seq(
+                "?",
+                field(consequence, expression),
+                ":",
+                field(alternative, expression),
+            )),
+            seq(
+                choice("if", "when"),
+                field(consequence, expression),
+                "else",
+                field(alternative, expression),
+            ),
+        ),
+    ))
+}
+
+rule call_expression {
+    prec_left(PREC.CALL, seq(
+        field(function, choice(seq(tag, identifier), _expression_no_tag, tag)),
+        "(",
+        optional(seq(
+            comma_sep1(seq(
+                field(argument, choice(expression, array_type, struct_type, pointer_type, procedure)),
+                optional(seq("=", choice(expression))),
+            )),
+            optional(","),
+        )),
+        ")",
+    ))
+}
+
+rule selector_call_expression {
+    prec_left(PREC.CALL, seq(
+        field(function, expression),
+        "->",
+        call_expression,
+    ))
+}
+
+rule member_expression {
+    prec_left(PREC.MEMBER, seq(
+        optional(expression),
+        ".",
+        expression,
+    ))
+}
+
+rule index_expression {
+    prec_left(PREC.MEMBER, seq(
+        expression,
+        "[",
+        expression,
+        optional(seq(",", expression)),
+        "]",
+    ))
+}
+
+rule slice_expression {
+    prec_left(PREC.MEMBER, seq(
+        expression,
+        "[",
+        optional(field(start, expression)),
+        ":",
+        optional(field(end, expression)),
+        "]",
+    ))
+}
+
+rule range_expression {
+    prec_left(PREC.MEMBER, seq(
+        expression,
+        choice("..=", "..<"),
+        expression,
+    ))
+}
+
+rule cast_expression {
+    prec_left(PREC.CAST, choice(
+        seq("(", choice(pointer_type, array_type, _procedure_type), ")", optional(expression)),
+        seq(choice("cast", "transmute"), "(", type, ")", expression),
+        seq("auto_cast", expression),
+    ))
+}
+
+rule in_expression {
+    prec_right(-1, seq(expression, choice("in", "not_in"), expression))
+}
+
+rule variadic_expression {
+    prec_left(PREC.VARIADIC, seq("..", expression))
+}
+
+rule parenthesized_expression { seq("(", expression, ")") }
+
+rule or_return_expression { seq(expression, "or_return") }
+
+rule or_continue_expression {
+    prec_right(0, seq(
+        expression,
+        "or_continue",
+        field(label, optional(identifier)),
+    ))
+}
+
+rule or_break_expression {
+    prec_right(0, seq(expression, "or_break", optional(expression)))
+}
+
+rule address { seq(expression, "^") }
+
+rule type {
+    prec_right(0, choice(
+        identifier,
+        pointer_type, variadic_type, array_type, map_type,
+        union_type, bit_set_type, matrix_type, field_type, tuple_type,
+        struct_type, enum_type, bit_field_type, constant_type,
+        specialized_type, _procedure_type, distinct_type,
+        empty_type, polymorphic_type, conditional_type,
+        "...",
+    ))
+}
+
+rule pointer_type { prec_left(0, seq("^", type)) }
+
+rule variadic_type { prec_left(0, seq("..", type)) }
+
+rule array_type {
+    prec(1, seq(
+        optional(tag),
+        "[",
+        optional(seq(optional("$"), choice("dynamic", "^", "?", expression))),
+        "]",
+        optional(type),
+    ))
+}
+
+rule map_type {
+    prec_right(0, seq("map", "[", type, "]", type))
+}
+
+rule union_type {
+    prec_right(0, seq("union", "{", comma_sep1(type), optional(","), "}"))
+}
+
+rule bit_set_type {
+    seq(
+        "bit_set",
+        "[",
+        choice(constant_type, expression),
+        optional(seq(";", type)),
+        "]",
+    )
+}
+
+rule matrix_type {
+    prec_left(0, seq(
+        "matrix",
+        "[",
+        choice(constant_type, expression),
+        ",",
+        choice(constant_type, expression),
+        "]",
+        type,
+    ))
+}
+
+rule field_type {
+    seq(identifier, repeat1(seq(token_immediate("."), identifier)))
+}
+
+rule tuple_type {
+    seq(
+        "(",
+        optional(seq(
+            comma_sep1(choice(type, named_type, default_type)),
+            optional(","),
+        )),
+        ")",
+    )
+}
+
+rule struct_type {
+    prec(1, seq(
+        "struct",
+        optional(polymorphic_parameters),
+        repeat(seq(tag, optional(number))),
+        repeat1(seq("{", optional(_struct_members), "}")),
+    ))
+}
+
+rule _struct_members {
+    seq(comma_sep1(struct_member), optional(","))
+}
+
+rule struct_member {
+    seq(
+        comma_sep1(seq(optional("using"), identifier)),
+        ":",
+        optional(tag),
+        type,
+        optional(string),
+    )
+}
+
+rule enum_type {
+    seq(
+        "enum",
+        optional(field(underlying_type, type)),
+        "{",
+        comma_sep1(seq(identifier, optional(seq("=", expression)))),
+        optional(","),
+        "}",
+    )
+}
+
+rule bit_field_type {
+    seq(
+        "bit_field",
+        type,
+        "{",
+        comma_sep1(seq(identifier, ":", type, "|", expression)),
+        optional(","),
+        "}",
+    )
+}
+
+rule named_type {
+    prec_right(0, seq(
+        comma_sep1(identifier),
+        ":",
+        type,
+        optional(seq("=", literal)),
+    ))
+}
+
+rule default_type { seq(identifier, ":=", expression) }
+
+rule constant_type { prec_right(0, seq("$", type)) }
+
+rule specialized_type {
+    prec_right(0, seq(type, "/", type))
+}
+
+rule _procedure_type { alias(procedure, procedure_type) }
+
+rule distinct_type {
+    prec_right(0, seq("distinct", optional(tag), type))
+}
+
+rule empty_type { "!" }
+
+rule polymorphic_type {
+    seq(type, "(", comma_sep1(choice(type, literal)), ")")
+}
+
+rule conditional_type {
+    seq("(", type, "when", expression, "else", type, ")")
+}
+
+rule literal {
+    prec_right(0, choice(
+        struct, map, bit_set, matrix,
+        float, number, string, character, boolean, nil, uninitialized,
+    ))
+}
+
+rule struct {
+    seq(
+        optional(choice(
+            seq("[", optional(choice("dynamic", "^", "?", expression)), "]", type),
+            seq(choice(identifier, field_identifier), optional(seq("(", comma_sep(identifier), ")"))),
+        )),
+        "{",
+        optional(seq(comma_sep1(struct_field), optional(","))),
+        "}",
+    )
+}
+
+rule map {
+    seq(
+        "map",
+        "[",
+        type,
+        "]",
+        type,
+        "{",
+        optional(seq(
+            comma_sep1(seq(expression, "=", expression)),
+            optional(","),
+        )),
+        "}",
+    )
+}
+
+rule bit_set {
+    seq(
+        "bit_set",
+        "[",
+        expression,
+        optional(seq(";", field(underlying_type, type))),
+        "]",
+        "{",
+        comma_sep(expression),
+        "}",
+    )
+}
+
+rule matrix {
+    seq(
+        "matrix",
+        "[",
+        expression,
+        ",",
+        expression,
+        "]",
+        type,
+        "{",
+        optional(seq(comma_sep1(expression), optional(","))),
+        "}",
+    )
+}
+
+rule struct_field {
+    prec_right(0, seq(
+        expression,
+        optional(seq("=", choice(expression, _procedure_type))),
+    ))
+}
+
+rule number {
+    token(choice(
+        seq(optional("-"), regexp(r"[0-9][0-9_]*[ijk]?")),
+        seq(optional("-"), regexp(r"0[xh][0-9a-fA-F_]+[ijk]?")),
+        seq(optional("-"), regexp(r"0o[0-7][0-7]*[ijk]?")),
+        seq(optional("-"), regexp(r"0b[01][01_]*[ijk]?")),
+    ))
+}
+
+rule string { choice(_string_literal, _raw_string_literal) }
+
+rule _string_literal {
+    seq("\"", repeat(choice(string_content, escape_sequence)), "\"")
+}
+
+rule _raw_string_literal {
+    seq("`", repeat(alias(_raw_string_content, string_content)), "`")
+}
+
+rule character {
+    seq("'", choice(regexp(r"[^'\\]"), escape_sequence), "'")
+}
+
+rule string_content { token_immediate(prec(1, regexp(r#"[^"\\]+"#))) }
+
+rule _raw_string_content { token_immediate(prec(1, regexp(r"[^`]+"))) }
+
+rule _escape_sequence {
+    choice(
+        prec(2, token_immediate(seq("\\", regexp(r#"[^abfnrtvxu'\"\\\?]"#)))),
+        prec(1, escape_sequence),
+    )
+}
+
+rule escape_sequence {
+    token_immediate(seq("\\", choice(
+        regexp(r"[^xu0-7]"),
+        regexp(r"[0-7]{1,3}"),
+        regexp(r"x[0-9a-fA-F]{2}"),
+        regexp(r"u[0-9a-fA-F]{4}"),
+        regexp(r"u\{[0-9a-fA-F]+\}"),
+        regexp(r"U[0-9a-fA-F]{8}"),
+    )))
+}
+
+rule boolean { choice("true", "false") }
+
+rule nil { "nil" }
+
+rule uninitialized { "---" }
+
+rule tag {
+    token(seq(
+        regexp(r"#[a-zA-Z_][a-zA-Z0-9_]*"),
+        optional(seq("(", regexp(r"\w*"), ")")),
+    ))
+}
+
+rule identifier { regexp(r"[_\p{XID_Start}][_\p{XID_Continue}]*") }
+
+rule field_identifier {
+    prec(-1, seq(identifier, repeat1(seq(".", identifier))))
+}
+
+rule keyword_identifier {
+    prec(-3, choice("nil", "false", "true"))
+}
+
+rule _separator { choice(_newline, ";") }
+
+rule comment { token(seq("//", regexp(r"[^\r\n]*"))) }
