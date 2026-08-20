@@ -2755,8 +2755,25 @@
                     "type": "FIELD",
                     "name": "consequence",
                     "content": {
-                      "type": "SYMBOL",
-                      "name": "statement"
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "SYMBOL",
+                              "name": "tag"
+                            },
+                            {
+                              "type": "BLANK"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "statement"
+                        }
+                      ]
                     }
                   }
                 ]
