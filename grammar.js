@@ -922,7 +922,12 @@ module.exports = grammar({
       ));
     },
 
-    string: $ => choice($._string_literal, $._raw_string_literal),
+    string: $ => choice(
+      $._string_literal,
+      $._raw_string_literal,
+      $._multiline_string_literal,
+      $._multiline_raw_string_literal,
+    ),
 
     _string_literal: $ => seq(
       '"',
@@ -937,6 +942,21 @@ module.exports = grammar({
       '`',
       repeat(alias($._raw_string_content, $.string_content)),
       '`',
+    ),
+
+    _multiline_string_literal: $ => seq(
+      '"""',
+      repeat(choice(
+        $.string_content,
+        $.escape_sequence,
+      )),
+      '"""',
+    ),
+
+    _multiline_raw_string_literal: $ => seq(
+      '```',
+      repeat(alias($._raw_string_content, $.string_content)),
+      '```',
     ),
 
     character: $ => seq(

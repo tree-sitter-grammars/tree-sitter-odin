@@ -1,0 +1,149 @@
+====================
+Triple Quote Strings
+====================
+
+
+""""""
+
+
+""" """
+
+
+"""Hello World"""
+
+
+    """Hello\nWorld"""
+
+
+    """\tHello\n\tWorld\t\n"""
+
+
+"""
+Hello World
+"""
+
+
+   """
+   Hello\tWorld\t\n
+   Hi\tWorld\t\n
+   """
+
+
+"""
+   Hello
+   World
+   """
+
+
+    """
+        Hello
+        World
+        """
+
+
+---
+
+
+(source_file
+  (string)
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content)
+    (escape_sequence)
+    (string_content))
+  (string
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (escape_sequence))
+  (string
+    (string_content))
+  (string
+    (string_content)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (escape_sequence)
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content)))
+
+
+
+=======================
+Triple Backtick Strings
+=======================
+
+
+``````
+
+
+``` ```
+
+
+```Hello World```
+
+
+    ```Hello\nWorld```
+
+
+    ```\tHello\n\tWorld\t\n```
+
+
+```
+Hello World
+```
+
+
+   ```
+   Hello\tWorld\t\n
+   Hi\tWorld\t\n
+   ```
+
+
+```
+   Hello
+   World
+   ```
+
+
+    ```
+        Hello
+        World
+        ```
+
+
+---
+
+
+(source_file
+  (string)
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content))
+  (string
+    (string_content)))
