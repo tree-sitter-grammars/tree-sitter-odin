@@ -2943,6 +2943,10 @@
     "named": false
   },
   {
+    "type": "\"\"\"",
+    "named": false
+  },
+  {
     "type": "\"c\"",
     "named": false
   },
@@ -3183,6 +3187,10 @@
     "named": false
   },
   {
+    "type": "```",
+    "named": false
+  },
+  {
     "type": "auto_cast",
     "named": false
   },
@@ -3196,7 +3204,8 @@
   },
   {
     "type": "block_comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "break",
@@ -3212,7 +3221,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "continue",
